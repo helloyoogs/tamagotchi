@@ -40,4 +40,17 @@ public class UserService {
             return userRepo.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
+    
+    // 아이디, 이메일, 닉네임 중복 체크
+    public boolean checkDuplicateId(Long id) {
+        return userRepo.existsById(id);
+    }
+    
+    public boolean checkDuplicateEmail(String email) {
+        return userRepo.existsByEmail(email);
+    }
+    
+    public boolean checkDuplicateNickname(String nickname) {
+        return userRepo.existsByNickname(nickname);
+    }
 }

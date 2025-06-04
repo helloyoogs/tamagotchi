@@ -40,4 +40,20 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.delete(id);
     }
+    
+    // 아이디, 이메일, 닉네임 중복 체크
+    @GetMapping("/check-id")
+    public boolean checkDuplicateId(@RequestParam Long id) {
+        return userService.checkDuplicateId(id);
+    }
+    
+    @GetMapping("/check-email")
+    public boolean checkDuplicateEmail(@RequestParam String email) {
+        return userService.checkDuplicateEmail(email);
+    }
+    
+    @GetMapping("/check-nickname")
+    public boolean checkDuplicateNickname(@RequestParam String nickname) {
+        return userService.checkDuplicateNickname(nickname);
+    }
 }
