@@ -2,6 +2,10 @@ package com.example.tamagotchi.controller;
 
 import com.example.tamagotchi.entity.User;
 import com.example.tamagotchi.service.UserService;
+
+import jakarta.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,12 +45,21 @@ public class UserController {
         userService.delete(id);
     }
     
-    // 아이디, 이메일, 닉네임 중복 체크
-    @GetMapping("/check-id")
-    public boolean checkDuplicateId(@RequestParam Long id) {
-        return userService.checkDuplicateId(id);
+    // 회원가입: 유효성 + 중복 체크 포함
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUp(@Valid @RequestBody User user) {
+        if (userService.checkDuplicateEmail(user.getEmail())) {
+            return ResponseEntity.badRequest().body("이미 사용 중인 이메일입니다.");
+        }
+        if (userService.checkDuplicateNickname(user.getNickname())) {
+            return ResponseEntity.badRequest().body("이미 사용 중인 닉네임입니다.");
+        }
+
+        userService.create(user);
+        return ResponseEntity.ok("회원가입 완료");
     }
     
+    // 이메일, 닉네임 중복 체크
     @GetMapping("/check-email")
     public boolean checkDuplicateEmail(@RequestParam String email) {
         return userService.checkDuplicateEmail(email);
