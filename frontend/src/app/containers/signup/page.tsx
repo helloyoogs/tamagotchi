@@ -3,8 +3,12 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { CInput } from "@/app/component/_atoms/cInput";
 import { UserApi } from "@/app/@types/api";
 import CButton from "@/app/component/_atoms/cButton";
+import { API_PATH } from "@/app/constants/api";
+import { post } from "@/lib/api-client";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const router = useRouter();
   const [form, setForm] = useState<UserApi>({
     email: "",
     password: "",
@@ -18,13 +22,13 @@ export default function SignUp() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    await fetch("/api/users/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    alert("회원가입 요청이 전송되었습니다!");
+    try {
+      await post(API_PATH.USER.SIGNUP, form);
+      alert("회원가입 요청이 전송되었습니다!");
+      router.push("/login");
+    } catch (err) {
+      alert("회원가입 실패: " + err);
+    }
   };
 
   const fields: {
@@ -33,7 +37,12 @@ export default function SignUp() {
     type?: string;
     placeholder: string;
   }[] = [
-    { name: "email", label: "아이디(이메일)", placeholder: "이메일" },
+    {
+      name: "email",
+      label: "아이디(이메일)",
+      type: "email",
+      placeholder: "이메일",
+    },
     {
       name: "password",
       label: "비밀번호",
