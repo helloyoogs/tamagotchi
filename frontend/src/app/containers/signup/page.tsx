@@ -6,6 +6,7 @@ import CButton from "@/app/component/_atoms/cButton";
 import { API_PATH } from "@/app/constants/api";
 import { post } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
+import { validateUser } from "@/lib/validate-user";
 
 export default function SignUp() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function SignUp() {
     password: "",
     nickname: "",
   });
+  const [errors, setErrors] = useState<Partial<UserApi>>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,10 +24,16 @@ export default function SignUp() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const validationErrors = validateUser(form);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     try {
       await post(API_PATH.USER.SIGNUP, form);
       alert("회원가입 요청이 전송되었습니다!");
-      router.push("/login");
+      router.push("/containers/login");
     } catch (err) {
       alert("회원가입 실패: " + err);
     }
@@ -40,7 +48,6 @@ export default function SignUp() {
     {
       name: "email",
       label: "아이디(이메일)",
-      type: "email",
       placeholder: "이메일",
     },
     {
@@ -62,7 +69,7 @@ export default function SignUp() {
           TAMAGOTCHI
         </p>
         {fields.map(({ name, label, type = "text", placeholder }) => (
-          <CInput.Field key={name}>
+          <CInput.Field key={name} error={!!errors[name]}>
             <CInput.Label>{label}</CInput.Label>
             <CInput
               name={name}
@@ -71,7 +78,7 @@ export default function SignUp() {
               value={form[name]}
               onChange={handleChange}
             />
-            <CInput.ValidMessage>asdasdsadasdsa</CInput.ValidMessage>
+            <CInput.ValidMessage>{errors[name]}</CInput.ValidMessage>
           </CInput.Field>
         ))}
         <CButton type={"submit"} className={"mt-[20px]"}>
