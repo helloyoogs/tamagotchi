@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 @layer base {
+    html, body {
+        @apply h-full
+    }
     * {
         @apply text-[#1B1D1F] text-[14px] leading-[100%];
+    }
+
+    .cButton {
+        @apply  bg-[#1B1D1F] text-[#FFFFFF] h-[40px] rounded-[3px];
     }
 
     button {

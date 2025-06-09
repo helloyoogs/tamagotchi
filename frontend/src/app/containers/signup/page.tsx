@@ -2,6 +2,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { CInput } from "@/app/component/_atoms/cInput";
 import { UserApi } from "@/app/@types/api";
+import CButton from "@/app/component/_atoms/cButton";
 
 export default function SignUp() {
   const [form, setForm] = useState<UserApi>({
@@ -43,25 +44,31 @@ export default function SignUp() {
   ];
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 w-[600px] m-auto border border-[#DBDBDB] p-[30px] mt-[10%]"
-    >
-      <p className={"mb-[50px] text-center text-[20px]"}>TAMAGOTCHI</p>
-      {fields.map(({ name, label, type = "text", placeholder }) => (
-        <CInput.Field key={name} error={true}>
-          <CInput.Label>{label}</CInput.Label>
-          <CInput
-            name={name}
-            type={type}
-            placeholder={placeholder}
-            value={form[name]}
-            onChange={handleChange}
-          />
-          <CInput.ValidMessage>asdasdsadasdsa</CInput.ValidMessage>
-        </CInput.Field>
-      ))}
-      <button type="submit">회원가입</button>
-    </form>
+    <div className={"h-full flex  justify-center items-center"}>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 w-[600px] max-w-full border border-[#DBDBDB] p-[30px]"
+      >
+        <p className={"mb-[50px] text-center text-[20px] font-semibold"}>
+          TAMAGOTCHI
+        </p>
+        {fields.map(({ name, label, type = "text", placeholder }) => (
+          <CInput.Field key={name} error={true}>
+            <CInput.Label>{label}</CInput.Label>
+            <CInput
+              name={name}
+              type={type}
+              placeholder={placeholder}
+              value={form[name]}
+              onChange={handleChange}
+            />
+            <CInput.ValidMessage>asdasdsadasdsa</CInput.ValidMessage>
+          </CInput.Field>
+        ))}
+        <CButton type={"submit"} className={"mt-[20px]"}>
+          회원가입
+        </CButton>
+      </form>
+    </div>
   );
 }
