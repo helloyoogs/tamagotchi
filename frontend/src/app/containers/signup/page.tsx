@@ -53,7 +53,7 @@ export default function SignUp() {
           TAMAGOTCHI
         </p>
         {fields.map(({ name, label, type = "text", placeholder }) => (
-          <CInput.Field key={name} error={true}>
+          <CInput.Field key={name}>
             <CInput.Label>{label}</CInput.Label>
             <CInput
               name={name}
