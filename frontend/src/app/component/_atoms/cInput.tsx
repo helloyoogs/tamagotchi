@@ -20,7 +20,7 @@ interface FieldProps {
 const Field: FC<FieldProps> = ({ children, error, className }) => {
   return (
     <CInputContext.Provider value={{ error }}>
-      <div className={`flex flex-col gap-[4px] flex-1 ${className ?? ""}`}>
+      <div className={`flex flex-col gap-[6px] flex-1 ${className ?? ""}`}>
         {children}
       </div>
     </CInputContext.Provider>
@@ -33,7 +33,7 @@ interface LabelProps {
 }
 
 const Label: FC<LabelProps> = ({ children, className }) => (
-  <label className={className}>{children}</label>
+  <label className={`cInputLabel ${className}`}>{children}</label>
 );
 
 type InputProps = InputHTMLAttributes<HTMLInputElement>;

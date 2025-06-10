@@ -7,6 +7,7 @@ import { API_PATH } from "@/app/constants/api";
 import { post } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { validateUser } from "@/lib/validate-user";
+import { AlertPopup } from "@/app/component/_molecules/alertPopup";
 
 export default function SignUp() {
   const router = useRouter();
@@ -85,6 +86,12 @@ export default function SignUp() {
           회원가입
         </CButton>
       </form>
+      <AlertPopup
+        trigger={<button>삭제</button>}
+        title="삭제 확인"
+        description="정말 삭제하시겠습니까?"
+        onConfirm={() => console.log("삭제")}
+      />
     </div>
   );
 }

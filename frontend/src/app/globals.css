@@ -1,15 +1,32 @@
 @import "tailwindcss";
 
-@layer base {
+@layer components {
     html, body {
         @apply h-full
     }
-    * {
-        @apply text-[#1B1D1F] text-[14px] leading-[100%];
+
+    body {
+        font-family : 'Noto Sans KR', sans-serif;
     }
 
-    .cButton {
-        @apply  bg-[#1B1D1F] text-[#FFFFFF] h-[40px] rounded-[3px];
+    * {
+        @apply text-[#1B1D1F] leading-[100%];
+    }
+
+    .cButtonLine {
+        @apply border border-[#DBDBDB] rounded-[3px] font-[500];
+    }
+
+    .cButtonFill {
+        @apply bg-[#1B1D1F] text-[#FFFFFF] rounded-[3px];
+    }
+
+    .cButtonLg {
+        @apply h-[48px]
+    }
+
+    .cButtonMd {
+        @apply text-[14px] h-[36px]
     }
 
     button {
@@ -19,6 +36,7 @@
     button:disabled,
     button.disabled {
         cursor : not-allowed;
+        opacity : 0.4;
     }
 
     /* TamagotchiDisplay Styles */
@@ -211,11 +229,43 @@
     }
 
     .cInput {
-        @apply border border-[#DBDBDB] rounded-[3px] p-[0_10px] h-[36px];
+        @apply border border-[#DBDBDB] rounded-[3px] p-[0_10px] h-[36px] text-[14px];
+    }
+
+    .cInputLabel {
+        @apply text-[14px]
     }
 
     .cInputValidMessage {
         @apply text-[#d32f2f] text-[12px] pl-[4px];
+    }
+
+    .cPopupOverlay {
+        @apply fixed inset-0 bg-[rgba(0,0,0,0.5)];
+    }
+
+    .cPopupContent {
+        @apply fixed w-[600px] max-w-[100%] h-[250px] bg-white rounded-[3px] flex flex-col;
+    }
+
+    .cPopupHeader {
+        @apply flex items-center justify-between p-[20px]
+    }
+
+    .cPopupTitle {
+        @apply text-[20px]
+    }
+
+    .cPopupBody {
+        @apply flex-1 flex flex-col overflow-y-auto p-[20px] justify-center items-center
+    }
+
+    .cPopupFooter {
+        @apply flex items-center p-[20px] justify-center gap-4
+    }
+
+    .cPopupFooter button {
+        @apply w-[200px]
     }
 }
 
