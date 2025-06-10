@@ -1,24 +1,17 @@
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 import CPopup from "@/app/component/_atoms/cPopup";
 import CButton from "@/app/component/_atoms/cButton";
-
-interface AlertPopupProps {
-  trigger: ReactNode;
-  title: string;
-  description?: string;
-  confirmText?: string;
-  onConfirm: () => void;
-}
+import { AlertPopupProps } from "@/app/@types/components";
 
 export const AlertPopup: FC<AlertPopupProps> = ({
-  trigger,
-  title,
+  title = "알림창",
   description,
   confirmText = "확인",
   onConfirm,
+  ...rest
 }) => {
   return (
-    <CPopup trigger={trigger}>
+    <CPopup {...rest}>
       <CPopup.Header>
         <CPopup.Title>{title}</CPopup.Title>
       </CPopup.Header>

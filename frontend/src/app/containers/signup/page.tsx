@@ -17,9 +17,14 @@ export default function SignUp() {
     nickname: "",
   });
   const [errors, setErrors] = useState<Partial<UserApi>>({});
+  const [signupAlertOpen, setSignupAlertOpen] = useState("");
+
+  console.log(signupAlertOpen);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -33,10 +38,12 @@ export default function SignUp() {
 
     try {
       await post(API_PATH.USER.SIGNUP, form);
-      alert("회원가입 요청이 전송되었습니다!");
-      router.push("/containers/login");
+      setSignupAlertOpen(
+        "TAMAGOTCHI에 가입해 주셔서 감사합니다! 로그인 페이지로 이동합니다."
+      );
     } catch (err) {
-      alert("회원가입 실패: " + err);
+      setSignupAlertOpen("회원가입에 실패하였습니다.");
+      console.log(err);
     }
   };
 
@@ -87,10 +94,15 @@ export default function SignUp() {
         </CButton>
       </form>
       <AlertPopup
-        trigger={<button>삭제</button>}
-        title="삭제 확인"
-        description="정말 삭제하시겠습니까?"
-        onConfirm={() => console.log("삭제")}
+        open={!!signupAlertOpen}
+        onOpenChange={(open: boolean) => {
+          if (!open) setSignupAlertOpen("");
+        }}
+        description={signupAlertOpen}
+        onConfirm={() => {
+          setSignupAlertOpen("");
+          router.push("/containers/login");
+        }}
       />
     </div>
   );

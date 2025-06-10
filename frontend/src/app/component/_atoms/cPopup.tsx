@@ -36,12 +36,18 @@ const CPopup: FC<CPopupProps> & {
   Title: FC<TitleProps>;
   Description: FC<DescriptionProps>;
   Close: FC<CloseProps>;
-} = ({ trigger, children, className, ...props }) => {
+} = ({ open, onOpenChange, modal, trigger, children, className, ...props }) => {
   return (
-    <Dialog.Root>
+    <Dialog.Root open={open} onOpenChange={onOpenChange} modal={modal}>
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
       <Dialog.Overlay className={"cPopupOverlay"} />
-      <Dialog.Content className={`cPopupContent ${className}`} {...props}>
+      <Dialog.Content
+        className={`cPopupContent ${className}`}
+        onInteractOutside={
+          props.onInteractOutside ?? ((e) => e.preventDefault())
+        }
+        {...props}
+      >
         {children}
       </Dialog.Content>
     </Dialog.Root>
