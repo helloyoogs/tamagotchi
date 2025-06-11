@@ -58,7 +58,7 @@ export default function SignUpPage() {
         "TAMAGOTCHI에 가입해 주셔서 감사합니다! 로그인 페이지로 이동합니다."
       );
     } catch (err) {
-      setSignupAlertOpen("회원가입에 실패하였습니다.");
+      setSignupAlertOpen("서버 오류가 발생했습니다");
       console.error(err);
     }
   };
