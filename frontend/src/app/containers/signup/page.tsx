@@ -34,32 +34,29 @@ export default function SignUpPage() {
       setErrors(validationErrors);
       return;
     }
+
     try {
-      const emailCheck = await get(API_PATH.USER.CHECK_EMAIL, {
-        email: form.email!,
-      });
+      const result = await post(API_PATH.USER.SIGNUP, form);
 
-      if (emailCheck.isDuplicated) {
-        setSignupAlertOpen("이미 사용 중인 이메일입니다.");
-        return;
+      switch (result.code) {
+        case "SIGNUP_SUCCESS":
+          setIsSignupSuccess(true);
+          setSignupAlertOpen(
+            "TAMAGOTCHI에 가입해 주셔서 감사합니다! 로그인 페이지로 이동합니다."
+          );
+          break;
+        case "EMAIL_ALREADY_EXISTS":
+          setSignupAlertOpen("이미 사용 중인 이메일입니다.");
+          break;
+        case "NICKNAME_ALREADY_EXISTS":
+          setSignupAlertOpen("이미 사용 중인 닉네임입니다.");
+          break;
+        default:
+          setSignupAlertOpen("정의되지 않은 응답입니다.");
       }
-
-      const nicknameCheck = await get(API_PATH.USER.CHECK_NICKNAME, {
-        nickname: form.nickname!,
-      });
-      if (nicknameCheck.isDuplicated) {
-        setSignupAlertOpen("이미 사용 중인 닉네임입니다.");
-        return;
-      }
-
-      await post(API_PATH.USER.SIGNUP, form);
-      setIsSignupSuccess(true);
-      setSignupAlertOpen(
-        "TAMAGOTCHI에 가입해 주셔서 감사합니다! 로그인 페이지로 이동합니다."
-      );
-    } catch (err) {
-      setSignupAlertOpen("서버 오류가 발생했습니다");
-      console.error(err);
+    } catch (error) {
+      console.error(error);
+      setSignupAlertOpen("서버 오류가 발생했습니다.");
     }
   };
 

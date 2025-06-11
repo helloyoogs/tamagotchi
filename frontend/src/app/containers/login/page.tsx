@@ -35,12 +35,29 @@ export default function LoginPage() {
       return;
     }
     try {
-      await post(API_PATH.USER.LOGIN, form);
-      setIsSignupSuccess(true);
-      setSignupAlertOpen("로그인에 성공하였습니다. 메인 페이지로 이동합니다.");
-    } catch (err) {
-      setSignupAlertOpen("서버 오류가 발생했습니다");
-      console.error(err);
+      const result = await post(API_PATH.USER.LOGIN, form);
+
+      switch (result.message) {
+        case "LOGIN_SUCCESS":
+          setIsSignupSuccess(true);
+          setSignupAlertOpen(
+            "로그인에 성공하였습니다. 메인 페이지로 이동합니다."
+          );
+          break;
+        case "USER_NOT_FOUND":
+          setSignupAlertOpen("존재하지 않는 이메일입니다.");
+          break;
+        case "INVALID_CREDENTIALS":
+          setSignupAlertOpen("비밀번호가 일치하지 않습니다.");
+          break;
+        default:
+          setSignupAlertOpen(
+            "처리 중 알 수 없는 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
+          );
+      }
+    } catch (error) {
+      console.error(error);
+      setSignupAlertOpen("서버 오류가 발생했습니다.");
     }
   };
 
