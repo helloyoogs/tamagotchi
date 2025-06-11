@@ -1,5 +1,6 @@
 package com.example.tamagotchi.controller;
 
+import com.example.tamagotchi.constant.UserResponseCode;
 import com.example.tamagotchi.entity.User;
 import com.example.tamagotchi.service.UserService;
 
@@ -45,38 +46,48 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.delete(id);
     }
-    
-    // 회원가입: 유효성 + 중복 체크 포함
+
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody User user) {
         if (userService.checkDuplicateEmail(user.getEmail())) {
-            return ResponseEntity.badRequest().body("이미 사용 중인 이메일입니다.");
+            return ResponseEntity.badRequest().body(
+                Map.of("code", UserResponseCode.EMAIL_ALREADY_EXISTS)
+            );
         }
         if (userService.checkDuplicateNickname(user.getNickname())) {
-            return ResponseEntity.badRequest().body("이미 사용 중인 닉네임입니다.");
+            return ResponseEntity.badRequest().body(
+                Map.of("code", UserResponseCode.NICKNAME_ALREADY_EXISTS)
+            );
         }
 
         userService.create(user);
-        return ResponseEntity.ok("회원가입 완료");
+        return ResponseEntity.ok(Map.of("code", UserResponseCode.SIGNUP_SUCCESS));
     }
-    
-    // 이메일, 닉네임 중복 체크
+
+    // 이메일 중복 체크
     @GetMapping("/check-email")
     public ResponseEntity<Map<String, Boolean>> checkDuplicateEmail(@RequestParam String email) {
         boolean isDuplicated = userService.checkDuplicateEmail(email);
         return ResponseEntity.ok(Map.of("isDuplicated", isDuplicated));
     }
-    
+
+    // 닉네임 중복 체크
     @GetMapping("/check-nickname")
-    public ResponseEntity<Map<String, Boolean>> checkDuplicateNickname(@RequestParam String nickname) {        
+    public ResponseEntity<Map<String, Boolean>> checkDuplicateNickname(@RequestParam String nickname) {
         boolean isDuplicated = userService.checkDuplicateNickname(nickname);
         return ResponseEntity.ok(Map.of("isDuplicated", isDuplicated));
     }
-    
+
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
-    	return userService.authenticate(user.getEmail(), user.getPassword())
-    		.map(u -> ResponseEntity.ok(Map.of("message", "로그인 성공", "nickname", u.getNickname())))
-    		.orElse(ResponseEntity.badRequest().body(Map.of("message", "이메일 또는 비밀번호가 올바르지 않습니다.")));
+        return userService.authenticate(user.getEmail(), user.getPassword())
+            .map(u -> ResponseEntity.ok(
+                Map.of("code", UserResponseCode.LOGIN_SUCCESS, "nickname", u.getNickname()))
+            )
+            .orElse(ResponseEntity.badRequest().body(
+                Map.of("code", UserResponseCode.INVALID_CREDENTIALS))
+            );
     }
 }
