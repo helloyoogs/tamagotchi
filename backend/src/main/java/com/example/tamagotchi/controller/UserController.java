@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -61,12 +62,14 @@ public class UserController {
     
     // 이메일, 닉네임 중복 체크
     @GetMapping("/check-email")
-    public boolean checkDuplicateEmail(@RequestParam String email) {
-        return userService.checkDuplicateEmail(email);
+    public ResponseEntity<Map<String, Boolean>> checkDuplicateEmail(@RequestParam String email) {
+        boolean isDuplicated = userService.checkDuplicateEmail(email);
+        return ResponseEntity.ok(Map.of("isDuplicated", isDuplicated));
     }
     
     @GetMapping("/check-nickname")
-    public boolean checkDuplicateNickname(@RequestParam String nickname) {
-        return userService.checkDuplicateNickname(nickname);
+    public ResponseEntity<Map<String, Boolean>> checkDuplicateNickname(@RequestParam String nickname) {        
+        boolean isDuplicated = userService.checkDuplicateNickname(nickname);
+        return ResponseEntity.ok(Map.of("isDuplicated", isDuplicated));
     }
 }
