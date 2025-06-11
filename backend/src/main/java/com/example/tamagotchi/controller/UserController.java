@@ -72,4 +72,11 @@ public class UserController {
         boolean isDuplicated = userService.checkDuplicateNickname(nickname);
         return ResponseEntity.ok(Map.of("isDuplicated", isDuplicated));
     }
+    
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user) {
+    	return userService.authenticate(user.getEmail(), user.getPassword())
+    		.map(u -> ResponseEntity.ok(Map.of("message", "로그인 성공", "nickname", u.getNickname())))
+    		.orElse(ResponseEntity.badRequest().body(Map.of("message", "이메일 또는 비밀번호가 올바르지 않습니다.")));
+    }
 }
