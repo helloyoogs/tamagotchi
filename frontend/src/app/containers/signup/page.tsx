@@ -4,7 +4,7 @@ import { CInput } from "@/app/component/_atoms/cInput";
 import { UserApi } from "@/app/@types/api";
 import CButton from "@/app/component/_atoms/cButton";
 import { API_PATH } from "@/app/constants/api";
-import { post } from "@/lib/api-client";
+import { get, post } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { validateUser } from "@/lib/validate-user";
 import { AlertPopup } from "@/app/component/_molecules/alertPopup";
@@ -18,8 +18,7 @@ export default function SignUp() {
   });
   const [errors, setErrors] = useState<Partial<UserApi>>({});
   const [signupAlertOpen, setSignupAlertOpen] = useState("");
-
-  console.log(signupAlertOpen);
+  const [isSignupSuccess, setIsSignupSuccess] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,15 +34,32 @@ export default function SignUp() {
       setErrors(validationErrors);
       return;
     }
-
     try {
+      const emailCheck = await get(API_PATH.USER.CHECK_EMAIL, {
+        email: form.email!,
+      });
+
+      if (emailCheck.isDuplicated) {
+        setSignupAlertOpen("이미 사용 중인 이메일입니다.");
+        return;
+      }
+
+      const nicknameCheck = await get(API_PATH.USER.CHECK_NICKNAME, {
+        nickname: form.nickname!,
+      });
+      if (nicknameCheck.isDuplicated) {
+        setSignupAlertOpen("이미 사용 중인 닉네임입니다.");
+        return;
+      }
+
       await post(API_PATH.USER.SIGNUP, form);
+      setIsSignupSuccess(true);
       setSignupAlertOpen(
         "TAMAGOTCHI에 가입해 주셔서 감사합니다! 로그인 페이지로 이동합니다."
       );
     } catch (err) {
       setSignupAlertOpen("회원가입에 실패하였습니다.");
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -101,7 +117,9 @@ export default function SignUp() {
         description={signupAlertOpen}
         onConfirm={() => {
           setSignupAlertOpen("");
-          router.push("/containers/login");
+          if (isSignupSuccess) {
+            router.push("/containers/login");
+          }
         }}
       />
     </div>
