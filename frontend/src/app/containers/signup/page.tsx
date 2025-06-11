@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { validateUser } from "@/lib/validate-user";
 import { AlertPopup } from "@/app/component/_molecules/alertPopup";
 
-export default function SignUp() {
+export default function SignUpPage() {
   const router = useRouter();
   const [form, setForm] = useState<UserApi>({
     email: "",
