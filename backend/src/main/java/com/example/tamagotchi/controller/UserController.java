@@ -81,13 +81,8 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
-        return userService.authenticate(user.getEmail(), user.getPassword())
-            .map(u -> ResponseEntity.ok(
-                Map.of("code", UserResponseCode.LOGIN_SUCCESS, "nickname", u.getNickname()))
-            )
-            .orElse(ResponseEntity.badRequest().body(
-                Map.of("code", UserResponseCode.INVALID_CREDENTIALS))
-            );
+    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
+        Map<String, Object> result = userService.authenticate(user.getEmail(), user.getPassword());
+        return ResponseEntity.ok(result);
     }
 }

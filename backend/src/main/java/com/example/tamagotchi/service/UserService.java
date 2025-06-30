@@ -1,10 +1,12 @@
 package com.example.tamagotchi.service;
 
+import com.example.tamagotchi.constant.UserResponseCode;
 import com.example.tamagotchi.entity.User;
 import com.example.tamagotchi.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -54,12 +56,18 @@ public class UserService {
 		return userRepo.existsByNickname(nickname);
 	}
 	
-	public Optional<User> authenticate(String email, String password) {
-		User user = userRepo.findByEmail(email);
-		if (user != null && user.getPassword().equals(password)) {
-			return Optional.of(user);
-		}
-		return Optional.empty();
+	public Map<String, Object> authenticate(String email, String password) {
+	    User user = userRepo.findByEmail(email);
+
+	    if (user == null) {
+	        return Map.of("code", UserResponseCode.USER_NOT_FOUND);
+	    }
+
+	    if (!user.getPassword().equals(password)) {
+	        return Map.of("code", UserResponseCode.INVALID_CREDENTIALS);
+	    }
+
+	    return Map.of("code", UserResponseCode.LOGIN_SUCCESS);
 	}
 
 }
