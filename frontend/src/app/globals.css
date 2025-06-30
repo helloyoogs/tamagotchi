@@ -245,7 +245,7 @@
     }
 
     .cPopupContent {
-        @apply fixed w-[600px] max-w-[100%] h-[250px] bg-white rounded-[3px] flex flex-col;
+        @apply fixed top-1/2 left-1/2 transform-[translate(-50%,-50%)] w-[600px] max-w-[100%] h-[250px] bg-white rounded-[3px] flex flex-col;
     }
 
     .cPopupHeader {

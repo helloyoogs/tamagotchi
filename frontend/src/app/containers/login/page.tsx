@@ -7,18 +7,17 @@ import { API_PATH } from "@/app/constants/api";
 import { post } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { validateUser } from "@/lib/validate-user";
-import { AlertPopup } from "@/app/component/_molecules/alertPopup";
+import { useAlert } from "@/app/context/AlertContext"; // ✅ 추가
 
 export default function LoginPage() {
   const router = useRouter();
+  const { showAlert } = useAlert(); // ✅ 전역 알림 훅 사용
   const [form, setForm] = useState<UserApi>({
     email: "",
     password: "",
     nickname: "",
   });
   const [errors, setErrors] = useState<Partial<UserApi>>({});
-  const [signupAlertOpen, setSignupAlertOpen] = useState("");
-  const [isSignupSuccess, setIsSignupSuccess] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,30 +33,32 @@ export default function LoginPage() {
       setErrors(validationErrors);
       return;
     }
+
     try {
       const result = await post(API_PATH.USER.LOGIN, form);
 
       switch (result.message) {
         case "LOGIN_SUCCESS":
-          setIsSignupSuccess(true);
-          setSignupAlertOpen(
-            "로그인에 성공하였습니다. 메인 페이지로 이동합니다."
-          );
+          showAlert({
+            description: "로그인에 성공하였습니다. 메인 페이지로 이동합니다.",
+            onConfirm: () => router.push("/containers/main"),
+          });
           break;
         case "USER_NOT_FOUND":
-          setSignupAlertOpen("존재하지 않는 이메일입니다.");
+          showAlert({ description: "존재하지 않는 이메일입니다." });
           break;
         case "INVALID_CREDENTIALS":
-          setSignupAlertOpen("비밀번호가 일치하지 않습니다.");
+          showAlert({ description: "비밀번호가 일치하지 않습니다." });
           break;
         default:
-          setSignupAlertOpen(
-            "처리 중 알 수 없는 문제가 발생했습니다. 잠시 후 다시 시도해주세요."
-          );
+          showAlert({
+            description:
+              "처리 중 알 수 없는 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+          });
       }
     } catch (error) {
       console.error(error);
-      setSignupAlertOpen("서버 오류가 발생했습니다.");
+      showAlert({ description: "서버 오류가 발생했습니다." });
     }
   };
 
@@ -81,7 +82,7 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className={"h-full flex  justify-center items-center"}>
+    <div className={"h-full flex justify-center items-center"}>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 w-[600px] max-w-full border border-[#DBDBDB] p-[30px]"
@@ -106,19 +107,6 @@ export default function LoginPage() {
           로그인
         </CButton>
       </form>
-      <AlertPopup
-        open={!!signupAlertOpen}
-        onOpenChange={(open: boolean) => {
-          if (!open) setSignupAlertOpen("");
-        }}
-        description={signupAlertOpen}
-        onConfirm={() => {
-          setSignupAlertOpen("");
-          if (isSignupSuccess) {
-            router.push("/containers/main");
-          }
-        }}
-      />
     </div>
   );
 }

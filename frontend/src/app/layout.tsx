@@ -1,4 +1,5 @@
 import "./globals.css";
+import { AlertProvider } from "@/app/context/AlertContext";
 
 export default function RootLayout({
   children,
@@ -17,7 +18,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <AlertProvider>{children}</AlertProvider>
+      </body>
     </html>
   );
 }

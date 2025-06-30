@@ -4,21 +4,20 @@ import { CInput } from "@/app/component/_atoms/cInput";
 import { UserApi } from "@/app/@types/api";
 import CButton from "@/app/component/_atoms/cButton";
 import { API_PATH } from "@/app/constants/api";
-import { get, post } from "@/lib/api-client";
+import { post } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { validateUser } from "@/lib/validate-user";
-import { AlertPopup } from "@/app/component/_molecules/alertPopup";
+import { useAlert } from "@/app/context/AlertContext"; // ✅ 전역 alert 훅 추가
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { showAlert } = useAlert(); // ✅ 전역 알림 훅 사용
   const [form, setForm] = useState<UserApi>({
     email: "",
     password: "",
     nickname: "",
   });
   const [errors, setErrors] = useState<Partial<UserApi>>({});
-  const [signupAlertOpen, setSignupAlertOpen] = useState("");
-  const [isSignupSuccess, setIsSignupSuccess] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,23 +39,24 @@ export default function SignUpPage() {
 
       switch (result.code) {
         case "SIGNUP_SUCCESS":
-          setIsSignupSuccess(true);
-          setSignupAlertOpen(
-            "TAMAGOTCHI에 가입해 주셔서 감사합니다! 로그인 페이지로 이동합니다."
-          );
+          showAlert({
+            description:
+              "TAMAGOTCHI에 가입해 주셔서 감사합니다! 로그인 페이지로 이동합니다.",
+            onConfirm: () => router.push("/containers/login"),
+          });
           break;
         case "EMAIL_ALREADY_EXISTS":
-          setSignupAlertOpen("이미 사용 중인 이메일입니다.");
+          showAlert({ description: "이미 사용 중인 이메일입니다." });
           break;
         case "NICKNAME_ALREADY_EXISTS":
-          setSignupAlertOpen("이미 사용 중인 닉네임입니다.");
+          showAlert({ description: "이미 사용 중인 닉네임입니다." });
           break;
         default:
-          setSignupAlertOpen("정의되지 않은 응답입니다.");
+          showAlert({ description: "정의되지 않은 응답입니다." });
       }
     } catch (error) {
       console.error(error);
-      setSignupAlertOpen("서버 오류가 발생했습니다.");
+      showAlert({ description: "서버 오류가 발생했습니다." });
     }
   };
 
@@ -81,7 +81,7 @@ export default function SignUpPage() {
   ];
 
   return (
-    <div className={"h-full flex  justify-center items-center"}>
+    <div className={"h-full flex justify-center items-center"}>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 w-[600px] max-w-full border border-[#DBDBDB] p-[30px]"
@@ -106,19 +106,6 @@ export default function SignUpPage() {
           회원가입
         </CButton>
       </form>
-      <AlertPopup
-        open={!!signupAlertOpen}
-        onOpenChange={(open: boolean) => {
-          if (!open) setSignupAlertOpen("");
-        }}
-        description={signupAlertOpen}
-        onConfirm={() => {
-          setSignupAlertOpen("");
-          if (isSignupSuccess) {
-            router.push("/containers/login");
-          }
-        }}
-      />
     </div>
   );
 }
