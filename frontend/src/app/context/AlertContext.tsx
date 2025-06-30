@@ -33,7 +33,6 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
     <AlertContext.Provider value={{ showAlert, hideAlert }}>
       {children}
 
-      {/* ✅ AlertPopup을 따로 만들지 않고 CPopup 직접 사용 */}
       <CPopup
         open={alert.open}
         onOpenChange={(open) => {
