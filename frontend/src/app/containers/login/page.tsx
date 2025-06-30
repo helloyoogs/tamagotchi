@@ -7,15 +7,14 @@ import { API_PATH } from "@/app/constants/api";
 import { post } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { validateUser } from "@/lib/validate-user";
-import { useAlert } from "@/app/context/AlertContext"; // ✅ 추가
+import { useAlert } from "@/app/context/AlertContext";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { showAlert } = useAlert(); // ✅ 전역 알림 훅 사용
+  const { showAlert } = useAlert();
   const [form, setForm] = useState<UserApi>({
     email: "",
     password: "",
-    nickname: "",
   });
   const [errors, setErrors] = useState<Partial<UserApi>>({});
 
@@ -37,7 +36,7 @@ export default function LoginPage() {
     try {
       const result = await post(API_PATH.USER.LOGIN, form);
 
-      switch (result.message) {
+      switch (result.code) {
         case "LOGIN_SUCCESS":
           showAlert({
             description: "로그인에 성공하였습니다. 메인 페이지로 이동합니다.",
