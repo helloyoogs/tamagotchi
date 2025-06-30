@@ -49,21 +49,18 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody User user) {
+    public ResponseEntity<Map<String, Object>> signUp(@Valid @RequestBody User user) {
         if (userService.checkDuplicateEmail(user.getEmail())) {
-            return ResponseEntity.badRequest().body(
-                Map.of("code", UserResponseCode.EMAIL_ALREADY_EXISTS)
-            );
+            return ResponseEntity.ok(Map.of("code", UserResponseCode.EMAIL_ALREADY_EXISTS));
         }
         if (userService.checkDuplicateNickname(user.getNickname())) {
-            return ResponseEntity.badRequest().body(
-                Map.of("code", UserResponseCode.NICKNAME_ALREADY_EXISTS)
-            );
+            return ResponseEntity.ok(Map.of("code", UserResponseCode.NICKNAME_ALREADY_EXISTS));
         }
 
         userService.create(user);
         return ResponseEntity.ok(Map.of("code", UserResponseCode.SIGNUP_SUCCESS));
     }
+
 
     // 이메일 중복 체크
     @GetMapping("/check-email")
