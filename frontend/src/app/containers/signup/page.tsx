@@ -7,11 +7,11 @@ import { API_PATH } from "@/app/constants/api";
 import { post } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { validateUser } from "@/lib/validate-user";
-import { useAlert } from "@/app/context/AlertContext"; // ✅ 전역 alert 훅 추가
+import { useAlert } from "@/app/context/AlertContext";
 
 export default function SignUpPage() {
   const router = useRouter();
-  const { showAlert } = useAlert(); // ✅ 전역 알림 훅 사용
+  const { showAlert } = useAlert();
   const [form, setForm] = useState<UserApi>({
     email: "",
     password: "",
@@ -52,7 +52,10 @@ export default function SignUpPage() {
           showAlert({ description: "이미 사용 중인 닉네임입니다." });
           break;
         default:
-          showAlert({ description: "정의되지 않은 응답입니다." });
+          showAlert({
+            description:
+              "처리 중 알 수 없는 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+          });
       }
     } catch (error) {
       console.error(error);
