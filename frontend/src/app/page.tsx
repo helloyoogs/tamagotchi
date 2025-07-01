@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CreateTamagotchiPage from "@/app/containers/tamagotchi/create/page";
 
 export default function Home() {
   return (
@@ -6,6 +7,7 @@ export default function Home() {
       tamagotchi
       <Link href={"/containers/signup"}>Sign-up</Link>
       <Link href={"/containers/login"}>Login</Link>
+      <Link href={"/containers/tamagotchi/create"}>Create Tamagotchi Page</Link>
       <Link href={"/containers/main"}>Main</Link>
       <Link href={"/containers/my"}>my character me, log</Link>
       <Link href={"/containers/eat"}>Eat</Link>
