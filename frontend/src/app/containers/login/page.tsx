@@ -8,6 +8,7 @@ import { post } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { validateUser } from "@/lib/validate-user";
 import { useAlert } from "@/app/context/AlertContext";
+import { saveUser } from "@/app/utils/localStorage";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,6 +39,7 @@ export default function LoginPage() {
 
       switch (result.code) {
         case "LOGIN_SUCCESS":
+          saveUser(form.email);
           showAlert({
             description: "로그인에 성공하였습니다. 메인 페이지로 이동합니다.",
             onConfirm: () => router.push("/containers/main"),
