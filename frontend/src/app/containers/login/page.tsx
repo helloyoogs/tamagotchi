@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { CInput } from "@/app/component/_atoms/cInput";
 import { UserApi } from "@/app/@types/api";
 import CButton from "@/app/component/_atoms/cButton";
@@ -8,7 +8,7 @@ import { post } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { validateUser } from "@/lib/validate-user";
 import { useAlert } from "@/app/context/AlertContext";
-import { saveUser } from "@/app/utils/localStorage";
+import { getUser, saveUser } from "@/app/utils/localStorage";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -81,6 +81,14 @@ export default function LoginPage() {
       placeholder: "비밀번호",
     },
   ];
+
+  useEffect(() => {
+    const currentUser = getUser();
+
+    if (currentUser) {
+      router.replace("/containers/main");
+    }
+  }, []);
 
   return (
     <div className={"h-full flex justify-center items-center"}>
